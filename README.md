@@ -4,6 +4,15 @@ root = Tk()
 root.title("Hello METANIT.COM")
 root.geometry("300x250") 
 root.mainloop()
+def send_message():
+    text = entry_field.get() # Получаем текст из интерфейса
+    if text:
+        client.send(text.encode('utf-8')) # Отправляем в сеть
+        entry_field.delete(0, 'end') # Очищаем поле ввода
+
+# Пример кнопки в tkinter:
+# send_button = Button(root, text="Отправить", command=send_message)
+
 # ... (Ваш код со скриншота: импорты, настройки подключения, списки клиентов и функция broadcast)
 
 def handle(client):
