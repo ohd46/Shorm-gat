@@ -1,4 +1,54 @@
 # Shorm-gat
+# ... (Ваш код со скриншота: импорты, настройки подключения, списки клиентов и функция broadcast)
+
+def handle(client):
+    """Функция для непрерывного чтения сообщений от конкретного клиента"""
+    while True:
+        try:
+            # Принимаем сообщение (до 1024 байт)
+            message = client.recv(1024)
+            # Пересылаем его всем участникам
+            broadcast(message)
+        except:
+            # Если клиент отключился или произошла ошибка
+            index = clients.index(client)
+            clients.remove(client)
+            client.close()
+            
+            nickname = nicknames[index]
+            broadcast(f'{nickname} покинул чат.'.encode('utf-8'))
+            nicknames.remove(nickname)
+            break
+
+def receive():
+    """Основной цикл, который принимает новые подключения"""
+    print("Сервер запущен и ожидает пользователей...")
+    while True:
+        # Принимаем входящее подключение
+        client, address = server.accept()
+        print(f"Установлено соединение с {str(address)}")
+
+        # Запрашиваем у клиента его имя (кодовое слово 'NICK')
+        client.send('NICK'.encode('utf-8'))
+        nickname = client.recv(1024).decode('utf-8')
+        
+        # Сохраняем данные клиента
+        nicknames.append(nickname)
+        clients.append(client)
+
+        # Объявляем в чате о новом участнике
+        print(f"Никнейм пользователя: {nickname}")
+        broadcast(f"{nickname} присоединился к чату!".encode('utf-8'))
+        client.send("Вы успешно подключились к серверу!".encode('utf-8'))
+
+        # Выделяем под этого клиента отдельный независимый поток (thread)
+        thread = threading.Thread(target=handle, args=(client,))
+        thread.start()
+
+# Запуск основного цикла сервера
+if __name__ == "__main__":
+    receive()
+
 import socket
 import threading
 # Настройки подключения
