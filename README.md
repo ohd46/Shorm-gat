@@ -1,4 +1,9 @@
 # Shorm-gat
+from tkinter import *
+root = Tk()
+root.title("Hello METANIT.COM")
+root.geometry("300x250") 
+root.mainloop()
 # ... (Ваш код со скриншота: импорты, настройки подключения, списки клиентов и функция broadcast)
 
 def handle(client):
